@@ -12,13 +12,19 @@ jobs:
     environment: testing
     runs-on: ubuntu-latest                          # Can use containers here to have full control
     container:                                      # All the steps are run on ubuntu OS in a container, steps will not have direct access to the runner machine
-      image: node:16 
+      image: node:16
     env:
-      MONGODB_CONNECTION_PROTOCOL: mongodb+srv
-      MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
-      MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-      MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+      MONGODB_CONNECTION_PROTOCOL: mongodb          # Refer to official documentation
+      MONGODB_CLUSTER_ADDRESS: mongodb              # Label used under services aka services.mongodb
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: example
       PORT: 8080
+    services:                                        # Add multiple service container
+      mongodb:                                       # User defined name
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example       # Exposing these is no problem because the DB will be shutdown
     steps:
       - name: Get Code
         uses: actions/checkout@v3
